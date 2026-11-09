@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ovaado</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#3B5BFF">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#EEF1F8; --surface:#FFFFFF; --ink:#172036; --muted:#6A7490; --line:#E1E5F0;
+  --accent:#3B5BFF; --accent-ink:#FFFFFF; --soon:#F59E0B; --late:#E5384F; --done:#12A06E;
+  --shadow:0 1px 2px rgba(23,32,54,.06),0 8px 24px rgba(23,32,54,.06);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#0E1220; --surface:#171D31; --ink:#EAEEFB; --muted:#8F9ABB; --line:#262E48;
+    --accent:#6D86FF; --accent-ink:#0E1220; --soon:#FBBF24; --late:#FF6B80; --done:#34D399;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0E1220; --surface:#171D31; --ink:#EAEEFB; --muted:#8F9ABB; --line:#262E48;
+  --accent:#6D86FF; --accent-ink:#0E1220; --soon:#FBBF24; --late:#FF6B80; --done:#34D399;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6;min-height:100vh}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 80px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+h1{font-size:1.7rem;font-weight:800;margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:.9rem;margin:0}
+.iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:12px;width:42px;height:42px;cursor:pointer;font-size:1.1rem;box-shadow:var(--shadow)}
+
+.perm{display:flex;align-items:center;gap:12px;justify-content:space-between;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--soon);border-radius:14px;padding:12px 14px;margin-bottom:16px;box-shadow:var(--shadow);font-size:.92rem}
+.perm.ok{border-left-color:var(--done)}
+.perm button{white-space:nowrap}
+
+.next{background:var(--accent);color:var(--accent-ink);border-radius:22px;padding:22px 22px 20px;margin-bottom:18px;box-shadow:var(--shadow)}
+.next small{opacity:.85;font-size:.85rem}
+.next .big{font-size:1.9rem;font-weight:800;line-height:1.25;margin:2px 0 4px;word-break:break-word}
+.next .cd{font-size:1.05rem;font-weight:500;font-variant-numeric:tabular-nums}
+
+form{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+form .full{grid-column:1/-1}
+label{display:block;font-size:.85rem;font-weight:500;color:var(--muted);margin-bottom:4px}
+input,select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:11px 12px;min-height:46px}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:12px;padding:11px 18px;font-weight:700;cursor:pointer;min-height:46px}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);min-height:38px;padding:6px 14px}
+.btn:active{transform:scale(.98)}
+
+.tabs{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto}
+.tab{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 16px;cursor:pointer;white-space:nowrap;font-weight:500}
+.tab[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow)}
+.item.soon{border-left-color:var(--soon)}
+.item.late{border-left-color:var(--late)}
+.item.done{border-left-color:var(--done);opacity:.65}
+.item.done .t{text-decoration:line-through}
+.chk{width:28px;height:28px;border-radius:50%;border:2px solid var(--muted);background:transparent;cursor:pointer;display:grid;place-items:center;font-size:.9rem;padding:0}
+.done .chk{background:var(--done);border-color:var(--done);color:#fff}
+.t{font-weight:700;word-break:break-word}
+.m{font-size:.85rem;color:var(--muted)}
+.badge{display:inline-block;font-size:.78rem;font-weight:700;border-radius:999px;padding:1px 10px;margin-left:6px;background:var(--bg)}
+.soon .badge{color:var(--soon)} .late .badge{color:var(--late)} .done .badge{color:var(--done)}
+.del{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:1.1rem;padding:8px;border-radius:8px}
+.del:hover{color:var(--late)}
+.acts{display:flex;align-items:center}
+a.del{text-decoration:none;line-height:1}
+.empty{text-align:center;color:var(--muted);padding:32px 12px;border:2px dashed var(--line);border-radius:18px}
+
+/* popup */
+.overlay{position:fixed;inset:0;background:rgba(10,14,28,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+.overlay.show{display:flex}
+.modal{background:var(--surface);border-radius:24px;padding:26px 24px 20px;max-width:380px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.35);text-align:center;animation:pop .25s ease-out}
+.modal .ico{font-size:2.6rem;line-height:1;animation:ring 1s ease-in-out 2}
+.modal h2{margin:8px 0 2px;font-size:1.35rem}
+.modal p{margin:0 0 16px;color:var(--muted)}
+.modal .row{display:flex;gap:10px}
+.modal .row .btn{flex:1}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+@keyframes ring{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(6deg)}}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:.9rem;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+@media (max-width:480px){form{grid-template-columns:1fr}.next .big{font-size:1.5rem}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>ovaado</h1>
+      <p class="sub" id="today"></p>
+    </div>
+    <div style="display:flex;gap:8px"><button class="iconbtn" id="sound" aria-label="ทดสอบเสียงเตือน">🔊</button><button class="iconbtn" id="theme" aria-label="สลับโหมดมืด/สว่าง">🌓</button></div>
+  </header>
+
+  <div class="perm" id="perm"></div>
+
+  <section class="next" id="next" aria-live="polite"></section>
+
+  <form id="form">
+    <div class="full">
+      <label for="subject">ชื่อวิชา</label>
+      <select id="subject" required></select>
+      <input id="subjectCustom" maxlength="60" placeholder="พิมพ์ชื่อวิชาใหม่ (บันทึกไว้ให้เลือกครั้งหน้า)" hidden style="margin-top:8px">
+    </div>
+    <div class="full">
+      <label for="task">งานที่ต้องทำ</label>
+      <input id="task" maxlength="100" placeholder="เช่น แบบฝึกหัดบทที่ 3">
+    </div>
+    <div>
+      <label for="due">กำหนดส่ง</label>
+      <input id="due" type="datetime-local" required>
+    </div>
+    <div>
+      <label for="before">เตือนล่วงหน้า</label>
+      <select id="before">
+        <option value="0">ตอนถึงเวลาส่ง</option>
+        <option value="10">10 นาที</option>
+        <option value="30">30 นาที</option>
+        <option value="60" selected>1 ชั่วโมง</option>
+        <option value="180">3 ชั่วโมง</option>
+        <option value="1440">1 วัน</option>
+      </select>
+    </div>
+    <div class="full"><button class="btn" type="submit" style="width:100%">เพิ่มการบ้าน</button></div>
+  </form>
+
+  <div class="tabs" role="group" aria-label="กรองรายการ">
+    <button class="tab" data-f="todo" aria-pressed="true">ยังไม่ส่ง</button>
+    <button class="tab" data-f="done" aria-pressed="false">ส่งแล้ว</button>
+    <button class="tab" data-f="all" aria-pressed="false">ทั้งหมด</button>
+  </div>
+  <ul id="list"></ul>
+</div>
+
+<div class="overlay" id="overlay" role="alertdialog" aria-modal="true" aria-labelledby="mtitle">
+  <div class="modal">
+    <div class="ico">⏰</div>
+    <h2 id="mtitle"></h2>
+    <p id="mbody"></p>
+    <div class="row">
+      <button class="btn ghost" id="mclose">รับทราบ</button>
+      <button class="btn" id="mdone">ทำเสร็จแล้ว</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+  var KEY = "hw-reminder-v1";
+  var items = [];
+  var filter = "todo";
+  var popupQueue = [];
+  var current = null;
+
+  function load(){
+    try { var r = localStorage.getItem(KEY); items = r ? JSON.parse(r) : []; } catch(e){ items = []; }
+  }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(items)); } catch(e){}
+    if(pushOn) syncPush();
+  }
+  var $ = function(id){ return document.getElementById(id); };
+
+  // theme
+  try { var th = localStorage.getItem("hw-theme"); if(th) document.documentElement.setAttribute("data-theme", th); } catch(e){}
+  $("theme").onclick = function(){
+    var dark = getComputedStyle(document.documentElement).colorScheme === "dark";
+    var n = dark ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", n);
+    try { localStorage.setItem("hw-theme", n); } catch(e){}
+  };
+
+  $("sound").onclick = function(){ beep(); toast("ทดสอบเสียงเตือน"); };
+
+  function toast(msg){
+    var t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(toast.t); toast.t = setTimeout(function(){ t.classList.remove("show"); }, 2200);
+  }
+
+  function fmtDate(ts){
+    return new Date(ts).toLocaleString("th-TH",{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}) + " น.";
+  }
+  function fmtLeft(ms){
+    var late = ms < 0; ms = Math.abs(ms);
+    var m = Math.floor(ms/60000), h = Math.floor(m/60), d = Math.floor(h/24);
+    var s = d>0 ? d+" วัน "+(h%24)+" ชม." : h>0 ? h+" ชม. "+(m%60)+" นาที" : Math.max(m,0)+" นาที";
+    return late ? "เลยกำหนด "+s : "อีก "+s;
+  }
+
+  // notifications
+  var pushOn = false, pushSub = null;
+  function pushSupported(){ return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window; }
+  function keyBytes(s){
+    var pad = "=".repeat((4 - s.length % 4) % 4);
+    var raw = atob((s + pad).replace(/-/g, "+").replace(/_/g, "/"));
+    return Uint8Array.from(raw, function(ch){ return ch.charCodeAt(0); });
+  }
+  async function syncPush(){
+    if(!pushSub) return;
+    try {
+      await fetch("/api/sync", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({subscription: pushSub.toJSON(), items: items})
+      });
+    } catch(e){}
+  }
+  async function setupPush(ask){
+    if(!pushSupported()){ if(ask) toast("เบราว์เซอร์นี้ยังไม่รองรับ Push"); return; }
+    try {
+      if(ask && Notification.permission === "default") await Notification.requestPermission();
+      if(Notification.permission !== "granted"){ renderPerm(); return; }
+      var reg = await navigator.serviceWorker.register("/sw.js");
+      await navigator.serviceWorker.ready;
+      var sub = await reg.pushManager.getSubscription();
+      if(!sub){
+        var res = await fetch("/api/key");
+        var k = await res.json();
+        sub = await reg.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: keyBytes(k.key)});
+      }
+      pushSub = sub; pushOn = true;
+      await syncPush(); renderPerm();
+      if(ask) toast("เปิดแจ้งเตือนนอกแอปแล้ว");
+    } catch(e){
+      pushOn = false; renderPerm();
+      if(ask) toast("เปิดไม่สำเร็จ: " + (e && e.message ? e.message : "ลองใหม่อีกครั้ง"));
+    }
+  }
+
+  function permState(){
+    if(!("Notification" in window)) return "unsupported";
+    return Notification.permission;
+  }
+  function renderPerm(){
+    var p = permState(), el = $("perm");
+    var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    var standalone = window.navigator.standalone || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
+    if(ios && !standalone){
+      el.className = "perm";
+      el.innerHTML = "<span>iPhone: กดปุ่มแชร์ แล้วเลือก “เพิ่มลงในหน้าจอโฮม” จากนั้นเปิดแอปจากไอคอนเพื่อเปิดแจ้งเตือน</span>";
+      return;
+    }
+    el.className = "perm" + (p==="granted" ? " ok" : "");
+    if(p==="granted"){
+      el.innerHTML = "<span>🔔 " + (pushOn ? "เปิดแจ้งเตือนนอกแอปแล้ว ปิดแอปก็ยังเตือน" : "เปิดการแจ้งเตือนแล้ว (ต้องเปิดแท็บนี้ค้างไว้)") + "</span>";
+    } else if(p==="denied"){
+      el.innerHTML = "<span>🔕 เบราว์เซอร์บล็อกการแจ้งเตือนไว้ — เปิดได้ที่การตั้งค่าเว็บไซต์ (ไอคอนแม่กุญแจ)</span>";
+    } else if(p==="unsupported"){
+      el.innerHTML = "<span>เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือนนอกแอป จะแสดงเป็นป๊อปอัปในหน้านี้แทน</span>";
+    } else {
+      el.innerHTML = "<span>เปิดการแจ้งเตือนเพื่อให้เด้งเตือนแม้อยู่หน้าต่างอื่น</span><button class='btn ghost' id='askperm'>เปิดแจ้งเตือน</button>";
+      $("askperm").onclick = function(){ setupPush(true); };
+    }
+  }
+
+  var audioCtx = null;
+  function getCtx(){
+    if(!audioCtx){
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return null;
+      audioCtx = new AC();
+    }
+    return audioCtx;
+  }
+  // browsers keep audio locked until the page gets a tap or key press
+  ["pointerdown","keydown","touchstart"].forEach(function(ev){
+    document.addEventListener(ev, function(){
+      var c = getCtx();
+      if(c && c.state === "suspended") c.resume();
+    }, {passive:true});
+  });
+
+  function beep(){
+    try {
+      var ctx = getCtx(); if(!ctx) return;
+      if(ctx.state === "suspended") ctx.resume();
+      var t0 = ctx.currentTime + .05;
+      // chime (G5 - C6 - E6) repeated 4 times, about 8 seconds in total
+      for(var r = 0; r < 4; r++) [[784, r*2], [1047, r*2 + .16], [1319, r*2 + .32]].forEach(function(n){
+        [[n[0], .18, "sine"], [n[0]*2, .05, "sine"]].forEach(function(h){
+          var o = ctx.createOscillator(), g = ctx.createGain(), s = t0 + n[1];
+          o.type = h[2]; o.frequency.value = h[0];
+          o.connect(g); g.connect(ctx.destination);
+          g.gain.setValueAtTime(.0001, s);
+          g.gain.exponentialRampToValueAtTime(h[1], s + .015);
+          g.gain.exponentialRampToValueAtTime(.0001, s + (n[0] === 1319 ? 1.5 : .6));
+          o.start(s); o.stop(s + 1.6);
+        });
+      });
+    } catch(e){}
+  }
+
+  function systemNotify(title, body){
+    if(pushOn || permState() !== "granted") return;
+    try {
+      var n = new Notification(title, {body: body, tag: title+body, requireInteraction: true});
+      n.onclick = function(){ window.focus(); n.close(); };
+    } catch(e){}
+  }
+
+  function showPopup(){
+    if(current || !popupQueue.length) return;
+    current = popupQueue.shift();
+    $("mtitle").textContent = current.title;
+    $("mbody").textContent = current.body;
+    $("overlay").classList.add("show");
+    $("mclose").focus();
+  }
+  function closePopup(){
+    $("overlay").classList.remove("show");
+    current = null;
+    setTimeout(showPopup, 200);
+  }
+  $("mclose").onclick = closePopup;
+  $("mdone").onclick = function(){
+    if(current){ var it = items.find(function(x){ return x.id===current.id; }); if(it){ it.done = true; save(); render(); } }
+    closePopup();
+  };
+
+  function alertUser(it, title, body){
+    systemNotify(title, body);
+    beep();
+    popupQueue.push({id: it.id, title: title, body: body});
+    showPopup();
+  }
+
+  function check(){
+    var now = Date.now(), changed = false;
+    items.forEach(function(it){
+      if(it.done) return;
+      var label = it.subject + (it.task ? " — " + it.task : "");
+      var remindAt = it.due - it.before*60000;
+      if(it.before > 0 && !it.warned && now >= remindAt && now < it.due){
+        it.warned = true; changed = true;
+        alertUser(it, "ใกล้ถึงเวลาส่งแล้ว: " + it.subject, label + " · " + fmtLeft(it.due - now));
+      }
+      if(!it.fired && now >= it.due){
+        it.fired = true; it.warned = true; changed = true;
+        alertUser(it, "ถึงเวลาส่งแล้ว: " + it.subject, label + " · กำหนด " + fmtDate(it.due));
+      }
+    });
+    if(changed) save();
+    render();
+  }
+
+  function gcal(it){
+    var f = function(t){ return new Date(t).toISOString().replace(/[-:]|\.\d{3}/g, ""); };
+    return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" +
+      encodeURIComponent("ส่งการบ้าน: " + it.subject + (it.task ? " — " + it.task : "")) +
+      "&dates=" + f(it.due) + "/" + f(it.due + 900000) +
+      "&details=" + encodeURIComponent("เพิ่มจาก ovaado");
+  }
+
+  function status(it, now){
+    if(it.done) return {c:"done", t:"ส่งแล้ว"};
+    var d = it.due - now;
+    if(d < 0) return {c:"late", t:"เลยกำหนด"};
+    if(d < 24*3600000) return {c:"soon", t:"ใกล้ถึงกำหนด"};
+    return {c:"", t:""};
+  }
+
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+  function render(){
+    var now = Date.now();
+    $("today").textContent = new Date().toLocaleDateString("th-TH",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+
+    var pending = items.filter(function(x){ return !x.done; }).sort(function(a,b){ return a.due-b.due; });
+    var nx = pending[0], box = $("next");
+    if(nx){
+      box.innerHTML = "<small>งานถัดไป</small><div class='big'>"+esc(nx.subject)+"</div><div class='cd'>"+(nx.task?esc(nx.task)+" · ":"")+fmtLeft(nx.due-now)+"</div>";
+    } else {
+      box.innerHTML = "<small>งานถัดไป</small><div class='big'>ไม่มีการบ้านค้าง 🎉</div><div class='cd'>เพิ่มงานใหม่ได้ที่ฟอร์มด้านล่าง</div>";
+    }
+
+    var shown = items.slice().filter(function(x){
+      return filter==="all" || (filter==="done" ? x.done : !x.done);
+    }).sort(function(a,b){ return a.due-b.due; });
+
+    var ul = $("list");
+    if(!shown.length){
+      ul.innerHTML = "<li class='empty'>"+(filter==="done"?"ยังไม่มีงานที่ส่งแล้ว":"ยังไม่มีรายการ เพิ่มการบ้านชิ้นแรกได้เลย")+"</li>";
+      return;
+    }
+    ul.innerHTML = shown.map(function(it){
+      var s = status(it, now);
+      return "<li class='item "+s.c+(it.done?" done":"")+"' data-id='"+it.id+"'>"+
+        "<button class='chk' data-act='toggle' aria-label='"+(it.done?"ยกเลิกส่งแล้ว":"ทำเครื่องหมายว่าส่งแล้ว")+"'>"+(it.done?"✓":"")+"</button>"+
+        "<div><div class='t'>"+esc(it.subject)+(s.t?"<span class='badge'>"+s.t+"</span>":"")+"</div>"+
+        (it.task?"<div class='m'>"+esc(it.task)+"</div>":"")+
+        "<div class='m'>"+fmtDate(it.due)+(it.done?"":" · "+fmtLeft(it.due-now))+"</div></div>"+
+        "<div class='acts'><a class='del' href='"+esc(gcal(it))+"' target='_blank' rel='noopener' aria-label='เพิ่มลงปฏิทิน' title='เพิ่มลงปฏิทิน'>📅</a><button class='del' data-act='del' aria-label='ลบ'>🗑</button></div></li>";
+    }).join("");
+  }
+
+  $("list").addEventListener("click", function(e){
+    var b = e.target.closest("button[data-act]"); if(!b) return;
+    var id = b.closest(".item").getAttribute("data-id");
+    var it = items.find(function(x){ return x.id===id; }); if(!it) return;
+    if(b.getAttribute("data-act")==="toggle"){ it.done = !it.done; toast(it.done?"ทำเครื่องหมายว่าส่งแล้ว":"ย้ายกลับเป็นยังไม่ส่ง"); }
+    else { items = items.filter(function(x){ return x.id!==id; }); toast("ลบรายการแล้ว"); }
+    save(); render();
+  });
+
+  document.querySelectorAll(".tab").forEach(function(t){
+    t.onclick = function(){
+      filter = t.getAttribute("data-f");
+      document.querySelectorAll(".tab").forEach(function(o){ o.setAttribute("aria-pressed", o===t ? "true":"false"); });
+      render();
+    };
+  });
+
+  // default due = tomorrow 18:00
+  (function(){
+    var d = new Date(); d.setDate(d.getDate()+1); d.setHours(18,0,0,0);
+    var p = function(n){ return String(n).padStart(2,"0"); };
+    $("due").value = d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+"T"+p(d.getHours())+":"+p(d.getMinutes());
+  })();
+
+  $("form").addEventListener("submit", function(e){
+    e.preventDefault();
+    var due = new Date($("due").value).getTime();
+    if(isNaN(due)){ toast("กรุณาเลือกวันและเวลาส่ง"); return; }
+    var subj = getSubject();
+    if(!subj){ toast("กรุณาเลือกวิชา"); return; }
+    var before = parseInt($("before").value, 10);
+    var now = Date.now();
+    items.push({
+      id: String(now) + Math.random().toString(36).slice(2,6),
+      subject: subj,
+      task: $("task").value.trim(),
+      due: due, before: before, done: false,
+      warned: before === 0 || (due - before*60000) <= now,
+      fired: due <= now
+    });
+    save(); render();
+    $("task").value = ""; $("task").focus();
+    toast("เพิ่มการบ้านแล้ว");
+    if(permState()==="default") toast("เพิ่มแล้ว — อย่าลืมกดเปิดแจ้งเตือนด้านบน");
+  });
+
+  // subject picker
+  // timetable: code -> [day (0=Sun), class start]
+  var PN = {"ท":"ภาษาไทย","ค":"คณิตศาสตร์","ว":"วิทยาศาสตร์","ส":"สังคมศึกษา","อ":"ภาษาอังกฤษ","พ":"สุขศึกษา/พลศึกษา","ศ":"ศิลปะ","ง":"การงานอาชีพ"};
+  var TT = {
+    "ว23102":[[1,"08:30"],[3,"08:30"]], "อ23203":[[1,"09:20"]],
+    "อ23102":[[1,"10:10"],[2,"13:00"],[5,"12:00"]], "พ23104":[[1,"12:00"]],
+    "ค23102":[[1,"13:00"],[2,"09:20"],[5,"09:20"]], "ส23104":[[1,"13:50"],[4,"08:30"]],
+    "พ23103":[[1,"14:40"]], "ท23102":[[2,"10:10"],[3,"13:50"],[5,"10:10"]],
+    "ส23105":[[2,"12:00"]], "ง23101":[[2,"13:50"]], "ค23202":[[3,"10:10"],[4,"13:50"]],
+    "ว20224":[[3,"12:00"]], "ศ20206":[[4,"10:10"]], "ว23104":[[4,"12:00"]],
+    "ศ23102":[[5,"13:00"]], "ส23106":[[5,"13:50"]], "ส23215":[[5,"14:40"]]
+  };
+  var BASE = Object.keys(TT).map(function(c){ return PN[c.charAt(0)] + " (" + c + ")"; }).sort(function(a,b){ return a.localeCompare(b, "th"); });
+  var customSubjects = [];
+  try { customSubjects = JSON.parse(localStorage.getItem("hw-subjects") || "[]"); } catch(e){ customSubjects = []; }
+  function buildSubjects(sel){
+    var h = '<option value="" disabled>เลือกวิชา</option>';
+    BASE.concat(customSubjects).forEach(function(n){ h += "<option>" + esc(n) + "</option>"; });
+    h += '<option value="__new">＋ เพิ่มวิชาอื่น…</option>';
+    $("subject").innerHTML = h;
+    $("subject").value = sel || "";
+  }
+  $("subject").addEventListener("change", function(){
+    var isNew = this.value === "__new", c = $("subjectCustom");
+    c.hidden = !isNew; c.required = isNew;
+    if(isNew) c.focus(); else suggestDue(this.value);
+  });
+  function suggestDue(v){
+    var m = /\(([^)]+)\)$/.exec(v), slots = m && TT[m[1]];
+    if(!slots) return;
+    var now = new Date(), best = null;
+    slots.forEach(function(s){
+      var hm = s[1].split(":"), d = new Date(now);
+      d.setHours(+hm[0], +hm[1], 0, 0);
+      d.setDate(d.getDate() + (s[0] - d.getDay() + 7) % 7);
+      if(d <= now) d.setDate(d.getDate() + 7);
+      if(!best || d < best) best = d;
+    });
+    if(!best) return;
+    var p = function(n){ return String(n).padStart(2,"0"); };
+    $("due").value = best.getFullYear()+"-"+p(best.getMonth()+1)+"-"+p(best.getDate())+"T"+p(best.getHours())+":"+p(best.getMinutes());
+    toast("ตั้งกำหนดส่งเป็นคาบเรียนถัดไปให้แล้ว");
+  }
+  function getSubject(){
+    var v = $("subject").value;
+    if(v !== "__new") return v;
+    var name = $("subjectCustom").value.trim();
+    if(!name) return null;
+    if(BASE.concat(customSubjects).indexOf(name) < 0){
+      customSubjects.push(name);
+      try { localStorage.setItem("hw-subjects", JSON.stringify(customSubjects)); } catch(e){}
+    }
+    $("subjectCustom").value = ""; $("subjectCustom").hidden = true; $("subjectCustom").required = false;
+    buildSubjects(name);
+    return name;
+  }
+  buildSubjects("");
+
+  load(); renderPerm(); render(); check();
+  if(pushSupported() && Notification.permission === "granted") setupPush(false);
+  setInterval(check, 15000);
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden) check(); });
+})();
+</script>
+</body>
+</html>
